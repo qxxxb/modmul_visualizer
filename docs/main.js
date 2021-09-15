@@ -13,6 +13,12 @@ const globals = {
   mode: 'multiplication'
 }
 
+// Borrowed code from https://github.com/d3/d3-scale-chromatic
+// to implement viridis colorscheme.
+// viridis(0) -> purple
+// viridis(1) -> yellow
+// Values in-between are interpolated
+
 function colors (specifier) {
   const n = (specifier.length / 6) | 0
   const colors = new Array(n)
@@ -74,11 +80,10 @@ varying vec2 vPos;
 
 uniform sampler2D uSampler;
 uniform vec2 uResolution;
-uniform float uTime;
 
 void main(void) {
   vec2 uv = gl_FragCoord.xy / uResolution.xy;
-  uv.y = 1.0 - uv.y;
+  uv.y = 1.0 - uv.y; // Flip so origin is top left
   vec4 diffuse = texture2D(uSampler, uv);
   gl_FragColor = diffuse;
 }
@@ -95,8 +100,7 @@ void main(void) {
     },
     uniformLocations: {
       uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
-      uResolution: gl.getUniformLocation(shaderProgram, 'uResolution'),
-      uTime: gl.getUniformLocation(shaderProgram, 'uTime')
+      uResolution: gl.getUniformLocation(shaderProgram, 'uResolution')
     }
   }
 
@@ -114,7 +118,7 @@ void main(void) {
   initPlayButton()
   initModeDropdown()
 
-  globals.texture = createTexture(gl, globals.modulus)
+  globals.texture = createTexture()
   startDrawing()
 }
 
@@ -123,7 +127,7 @@ function initModulusInput () {
   globals.modulusInput.value = globals.modulus
   globals.modulusInput.addEventListener('change', (event) => {
     globals.modulus = parseInt(event.target.value)
-    globals.texture = createTexture(globals.gl, globals.modulus)
+    globals.texture = createTexture()
   })
 }
 
@@ -138,7 +142,7 @@ function initPlayButton () {
     } else {
       globals.modulusIncrementInterval = setInterval(() => {
         globals.modulus++
-        globals.texture = createTexture(globals.gl, globals.modulus)
+        globals.texture = createTexture()
         globals.modulusInput.value = globals.modulus
       }, 100)
 
@@ -153,7 +157,7 @@ function initModeDropdown () {
 
   modeDropdown.addEventListener('click', (event) => {
     globals.mode = event.target.value
-    globals.texture = createTexture(globals.gl, globals.modulus)
+    globals.texture = createTexture()
   })
 }
 
@@ -217,9 +221,13 @@ function multiplicativeOrder (a, n) {
   return -1
 }
 
-function createTexture (gl, modulus) {
+function createTexture () {
+  const gl = globals.gl
+  const modulus = globals.modulus
+
   const n = modulus - 1
   const data = new Uint8Array(n * n * 4)
+
   for (let y = 0; y < n; y++) {
     for (let x = 0; x < n; x++) {
       const a = x + 1
@@ -237,10 +245,11 @@ function createTexture (gl, modulus) {
           v = powerMod(a, b, modulus)
           break
         case 'order':
-          v = multiplicativeOrder(a, modulus)
+          v = multiplicativeOrder((a * b) % modulus, modulus)
           break
-        case 'units':
-          v = multiplicativeOrder(a, modulus) === n ? modulus : 0
+        case 'generators':
+          v =
+            multiplicativeOrder((a * b) % modulus, modulus) === n ? modulus : 0
           break
       }
 
@@ -311,9 +320,6 @@ function drawScene (gl, programInfo, buffers, texture) {
     gl.canvas.clientWidth,
     gl.canvas.clientHeight
   )
-
-  // Time
-  gl.uniform1f(programInfo.uniformLocations.uTime, globals.totalTime)
 
   {
     const vertexCount = 6
