@@ -78,6 +78,7 @@ uniform float uTime;
 
 void main(void) {
   vec2 uv = gl_FragCoord.xy / uResolution.xy;
+  uv.y = 1.0 - uv.y;
   vec4 diffuse = texture2D(uSampler, uv);
   gl_FragColor = diffuse;
 }
@@ -206,6 +207,16 @@ function powerMod (a, p, n) {
   return ans
 }
 
+function multiplicativeOrder (a, n) {
+  // SLOW way
+  for (let p = 1; p < n; p++) {
+    if (powerMod(a, p, n) === 1) {
+      return p
+    }
+  }
+  return -1
+}
+
 function createTexture (gl, modulus) {
   const n = modulus - 1
   const data = new Uint8Array(n * n * 4)
@@ -219,8 +230,17 @@ function createTexture (gl, modulus) {
         case 'multiplication':
           v = (a * b) % modulus
           break
+        case 'addition':
+          v = (a + b) % modulus
+          break
         case 'exponentiation':
           v = powerMod(a, b, modulus)
+          break
+        case 'order':
+          v = multiplicativeOrder(a, modulus)
+          break
+        case 'units':
+          v = multiplicativeOrder(a, modulus) === n ? modulus : 0
           break
       }
 

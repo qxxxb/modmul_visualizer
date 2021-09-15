@@ -13,7 +13,7 @@
     <section class="section">
         <div class="container">
           <h1 class="title">Modular multiplication visualizer</h1>
-          <p class="subtitle">(0, 0) is bottom left &mdash; purple is low, yellow is high</p>
+          <p class="subtitle">(0, 0) is top left &mdash; purple is low, yellow is high</p>
 
           <canvas id="glcanvas" width="512" height="512"></canvas>
 
@@ -33,7 +33,10 @@
               <div class="select">
                 <select id="mode">
                   <option value="multiplication">Modular multiplication</option>
+                  <option value="addition">Modular addition</option>
                   <option value="exponentiation">Modular exponentiation</option>
+                  <option value="order">Multiplicative order</option>
+                  <option value="units">Multiplicative units</option>
                 </select>
               </div>
             </div>
