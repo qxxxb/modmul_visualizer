@@ -1,1 +1,45 @@
-../index.html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Modular multiplication visualizer</title>
+    <link rel="icon" href="favicon.svg">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js" integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ==" crossorigin="anonymous" defer></script>
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" integrity="sha256-WLKGWSIJYerRN8tbNGtXWVYnUM5wMJTXD8eG4NtGcDM=" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <section class="section">
+        <div class="container">
+          <h1 class="title">Modular multiplication visualizer</h1>
+          <p class="subtitle">Purple is low, yellow is high</p>
+
+          <canvas id="glcanvas" width="512" height="512"></canvas>
+
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input" id="modulus" type="number" placeholder="Modulus">
+            </div>
+
+            <div class="control">
+              <button class="button is-link" id="play">Play</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Mode</label>
+            <div class="control">
+              <div class="select">
+                <select id="mode">
+                  <option value="multiplication">Modular multiplication</option>
+                  <option value="exponentiation">Modular exponentiation</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </section>
+  </body>
+</html>
