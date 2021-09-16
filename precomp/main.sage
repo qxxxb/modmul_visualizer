@@ -21,7 +21,6 @@ def gen_texture(modulus):
             if False:
                 # This looks nice but can be 2x slower
                 v = F((x * y) % modulus).multiplicative_order()
-                print(x, y, v)
                 v /= modulus
             else:
                 v = F((x * y) % modulus).is_primitive_root()
