@@ -215,7 +215,7 @@ function multiplicativeOrder (a, n) {
   // TODO: Extremely SLOW
   let x = a
   let i = 1
-  while (true) {
+  while (i < n) {
     if (x === 1) return i
     x = (x * a) % n
     i += 1
