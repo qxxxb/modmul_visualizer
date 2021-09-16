@@ -7,7 +7,6 @@ import numpy as np
 viridis = cm.get_cmap("viridis")
 
 IMGS_PATH = Path("./imgs")
-N_PRIMES = 50
 
 
 def gen_texture(modulus):
@@ -15,6 +14,7 @@ def gen_texture(modulus):
     data = np.empty((n, n, 4), dtype=np.dtype("uint8"))
 
     F = GF(modulus)
+    cache = {}
 
     for x in range(1, modulus):
         for y in range(1, modulus):
@@ -23,7 +23,12 @@ def gen_texture(modulus):
                 v = F((x * y) % modulus).multiplicative_order()
                 v /= modulus
             else:
-                v = F((x * y) % modulus).is_primitive_root()
+                a = (x * y) % modulus
+                if a in cache:
+                    v = cache[a]
+                else:
+                    v = F(a).is_primitive_root()
+                    cache[a] = v
 
             color = viridis(float(v))
             color = [int(c * 255) for c in color]
@@ -37,7 +42,7 @@ if __name__ == "__main__":
     if not IMGS_PATH.is_dir():
         IMGS_PATH.mkdir()
 
-    primes = Primes()[:N_PRIMES]
+    primes = Primes()[:180]
     for p in tqdm(primes):
         data = gen_texture(p)
         img = Image.fromarray(data)
