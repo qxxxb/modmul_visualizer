@@ -23,7 +23,3 @@ for i, f in tqdm(enumerate(files)):
 
 
 subprocess.run(f"ffmpeg -framerate 5 -pattern_type glob -i '{DEST_PATH}/*.png' out.mp4", shell=True)
-
-"""
-ffmpeg -framerate 5 -pattern_type glob -i '*.png' out.mp4
-"""
