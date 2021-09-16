@@ -212,13 +212,14 @@ function powerMod (a, p, n) {
 }
 
 function multiplicativeOrder (a, n) {
-  // SLOW way
-  for (let p = 1; p < n; p++) {
-    if (powerMod(a, p, n) === 1) {
-      return p
-    }
+  // TODO: Extremely SLOW
+  let x = a
+  let i = 1
+  while (true) {
+    if (x === 1) return i
+    x = (x * a) % n
+    i += 1
   }
-  return -1
 }
 
 function createTexture () {
