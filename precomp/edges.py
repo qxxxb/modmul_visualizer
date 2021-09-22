@@ -7,7 +7,7 @@ from tqdm import tqdm
 import subprocess
 
 
-base = Path("./multiplicative_order")
+base = Path("./multiplication")
 SRC_PATH = base / "imgs_resized"
 DEST_PATH = base / "imgs_edges"
 
@@ -17,7 +17,7 @@ if not DEST_PATH.is_dir():
 files = list(SRC_PATH.iterdir())
 files = sorted(files, key=lambda f: int(f.stem.split("-")[0]))
 
-for i, f in tqdm(enumerate(files)):
+for i, f in enumerate(tqdm(files)):
     img = Image.open(f)
     img = ImageOps.grayscale(img)
     img = np.array(img).astype(np.float32)
@@ -26,4 +26,6 @@ for i, f in tqdm(enumerate(files)):
     img = Image.fromarray(edges)
     img.save(DEST_PATH / f.name)
 
-subprocess.run(f"ffmpeg -framerate 5 -pattern_type glob -i '{DEST_PATH}/*.png' out.mp4", shell=True)
+subprocess.run(
+    f"ffmpeg -framerate 5 -pattern_type glob -i '{DEST_PATH}/*.png' out.mp4", shell=True
+)

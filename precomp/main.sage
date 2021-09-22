@@ -18,11 +18,15 @@ def gen_texture(modulus):
 
     for x in range(1, modulus):
         for y in range(1, modulus):
+            v = (x * y) % modulus
+            v /= modulus
+
             if False:
                 # This looks nice but can be 2x slower
                 v = F((x * y) % modulus).multiplicative_order()
                 v /= modulus
-            else:
+
+            if False:
                 a = (x * y) % modulus
                 if a in cache:
                     v = cache[a]
